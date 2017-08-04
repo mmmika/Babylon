@@ -1,0 +1,7 @@
+/target/
+/.settings/
+/.classpath
+/.project
+/babylon.iml
+/dependency-reduced-pom.xml
+/.idea/
