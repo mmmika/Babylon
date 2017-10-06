@@ -1,3 +1,9 @@
+/**
+ * FILE: JoinQueryOperator.java
+ * PATH: org.datasyslab.babylon.core.queryoperator.JoinQueryOperator.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon.core.queryoperator;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -9,7 +15,19 @@ import org.apache.spark.api.java.function.PairFunction;
 import org.datasyslab.babylon.core.internalobject.Pixel;
 import scala.Tuple2;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JoinQueryOperator.
+ */
 public class JoinQueryOperator {
+    
+    /**
+     * Spatial join query.
+     *
+     * @param inputRDD the input RDD
+     * @param windowRDD the window RDD
+     * @return the java pair RDD
+     */
     public static JavaPairRDD<Pixel,Double> SpatialJoinQuery(JavaPairRDD<Pixel, Double> inputRDD, JavaRDD<Geometry> windowRDD)
     {
         JavaRDD<Tuple2<Pixel,Double>> mergeRDD = inputRDD.map(new Function<Tuple2<Pixel,Double>, Tuple2<Pixel,Double>>() {
@@ -28,6 +46,14 @@ public class JoinQueryOperator {
         });
     }
 
+    /**
+     * Spatial join query.
+     *
+     * @param inputRDD the input RDD
+     * @param windowRDD the window RDD
+     * @param distance the distance
+     * @return the java pair RDD
+     */
     public JavaPairRDD<Pixel,Double> SpatialJoinQuery(JavaPairRDD<Pixel, Double> inputRDD, JavaRDD<Polygon> windowRDD, double distance)
     {
         JavaRDD<Tuple2<Pixel,Double>> mergeRDD = inputRDD.map(new Function<Tuple2<Pixel,Double>, Tuple2<Pixel,Double>>() {

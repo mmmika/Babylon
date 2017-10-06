@@ -1,3 +1,9 @@
+/**
+ * FILE: PixelJoinGeometryJudgement.java
+ * PATH: org.datasyslab.babylon.core.queryoperator.PixelJoinGeometryJudgement.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon.core.queryoperator;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -12,8 +18,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PixelJoinGeometryJudgement.
+ *
+ * @param <T> the generic type
+ */
 public class PixelJoinGeometryJudgement<T extends Geometry> implements FlatMapFunction2<Iterator<Tuple2<Pixel,Double>>, Iterator<T>, Tuple2<Pixel,Double>>, Serializable {
 
+    /* (non-Javadoc)
+     * @see org.apache.spark.api.java.function.FlatMapFunction2#call(java.lang.Object, java.lang.Object)
+     */
     @Override
     public Iterator<Tuple2<Pixel, Double>> call(Iterator<Tuple2<Pixel, Double>> tuple2Iterator, Iterator<T> geometryIterator) throws Exception {
         List<Tuple2<Pixel, Double>> result = new ArrayList<Tuple2<Pixel, Double>>();

@@ -40,7 +40,6 @@ public class ImageStitcher {
      * @param imageTilePath the image tile path
      * @param globalParameter the global parameter
      * @return true, if successful
-     * @throws Exception the exception
      */
     public static boolean stitchImagePartitionsFromLocalFile(String imageTilePath, GlobalParameter globalParameter)
     {
@@ -84,7 +83,6 @@ public class ImageStitcher {
      * @param imageTilePath the image tile path
      * @param globalParameter the global parameter
      * @return true, if successful
-     * @throws Exception the exception
      */
     public static boolean stitchImagePartitionsFromS3File(String regionName, String accessKey, String secretKey, String bucketName, String imageTilePath, GlobalParameter globalParameter)
     {
@@ -125,7 +123,6 @@ public class ImageStitcher {
      * @param imageTilePath the image tile path
      * @param globalParameter the global parameter
      * @return true, if successful
-     * @throws Exception the exception
      */
     public static boolean stitchImagePartitionsFromHadoopFile(String imageTilePath, GlobalParameter globalParameter)
     {

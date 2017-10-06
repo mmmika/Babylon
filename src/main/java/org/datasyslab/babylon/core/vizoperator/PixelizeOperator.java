@@ -40,6 +40,13 @@ public class PixelizeOperator {
         return Pixelize(spatialRDD.rawSpatialRDD,globalParameter);
     }
 
+    /**
+     * Pixelize.
+     *
+     * @param spatialRDD the spatial RDD
+     * @param globalParameter the global parameter
+     * @return the java pair RDD
+     */
     public static JavaPairRDD<Pixel, Double> Pixelize(JavaRDD<Geometry> spatialRDD, final GlobalParameter globalParameter)
     {
         JavaPairRDD<Pixel, Double> spatialRDDwithPixelId = spatialRDD.flatMapToPair(new PairFlatMapFunction<Geometry,Pixel,Double>()

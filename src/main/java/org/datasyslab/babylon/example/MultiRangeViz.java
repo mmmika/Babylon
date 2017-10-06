@@ -1,3 +1,9 @@
+/**
+ * FILE: MultiRangeViz.java
+ * PATH: org.datasyslab.babylon.example.MultiRangeViz.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon.example;
 
 import com.vividsolutions.jts.geom.Polygon;
@@ -23,17 +29,37 @@ import org.datasyslab.geospark.spatialRDD.SpatialRDD;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MultiRangeViz.
+ */
 public class MultiRangeViz extends GenericVizEffect {
+    
+    /** The Constant logger. */
     final static Logger logger = Logger.getLogger(MultiRangeViz.class);
 
+    /** The query windows. */
     public List<Polygon> queryWindows = new ArrayList<Polygon>();
+    
+    /** The output location. */
     public String outputLocation = null;
+    
+    /**
+     * Instantiates a new multi range viz.
+     *
+     * @param globalParameter the global parameter
+     * @param queryWindows the query windows
+     * @param outputLocation the output location
+     */
     public MultiRangeViz(GlobalParameter globalParameter, List<Polygon> queryWindows, String outputLocation) {
         super(globalParameter);
         this.queryWindows = queryWindows;
         this.outputLocation = outputLocation;
     }
 
+    /* (non-Javadoc)
+     * @see org.datasyslab.babylon.core.GenericVizEffect#RunOperators(org.apache.spark.api.java.JavaSparkContext, org.datasyslab.geospark.spatialRDD.SpatialRDD)
+     */
     @Override
     public boolean RunOperators(JavaSparkContext sparkContext, SpatialRDD spatialRDD)
     {

@@ -199,11 +199,28 @@ public class VizPartitioner extends Partitioner implements Serializable{
 		}
 
 	}
+	
+	/**
+	 * Viz partition.
+	 *
+	 * @param spatialRDD the spatial RDD
+	 * @param globalParameter the global parameter
+	 * @param partitionParameter the partition parameter
+	 * @return the java RDD
+	 */
 	public static JavaRDD<Geometry> vizPartition(SpatialRDD spatialRDD, final GlobalParameter globalParameter, final PartitionParameter partitionParameter)
 	{
 		return vizPartition(spatialRDD.rawSpatialRDD,globalParameter,partitionParameter);
 	}
 
+	/**
+	 * Viz partition.
+	 *
+	 * @param spatialRDD the spatial RDD
+	 * @param globalParameter the global parameter
+	 * @param partitionParameter the partition parameter
+	 * @return the java RDD
+	 */
 	public static JavaRDD<Geometry> vizPartition(JavaRDD<Geometry> spatialRDD, final GlobalParameter globalParameter, final PartitionParameter partitionParameter)
 	{
 		logger.info("[Babylon][vizPartitionSpatialRDD][Start]");

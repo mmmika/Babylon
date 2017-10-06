@@ -81,7 +81,6 @@ public class S3Operator {
 	 * @param path the path
 	 * @param rasterImage the raster image
 	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public boolean putImage(String bucketName, String path, BufferedImage rasterImage) {
         deleteImage(bucketName,path);
@@ -117,7 +116,6 @@ public class S3Operator {
 	 * @param bucketName the bucket name
 	 * @param path the path
 	 * @return the image
-	 * @throws Exception the exception
 	 */
 	public BufferedImage getImage(String bucketName, String path) {
 		logger.debug("[Babylon][getImage] Start");

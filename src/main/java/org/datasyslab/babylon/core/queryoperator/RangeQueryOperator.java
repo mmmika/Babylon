@@ -1,3 +1,9 @@
+/**
+ * FILE: RangeQueryOperator.java
+ * PATH: org.datasyslab.babylon.core.queryoperator.RangeQueryOperator.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon.core.queryoperator;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -15,7 +21,19 @@ import scala.Tuple2;
 
 import static org.datasyslab.babylon.core.utils.PixelizationUtils.ConvertToPixelCoordinate;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RangeQueryOperator.
+ */
 public class RangeQueryOperator {
+    
+    /**
+     * Spatial range query.
+     *
+     * @param inputRDD the input RDD
+     * @param queryWindow the query window
+     * @return the java RDD
+     */
     public static JavaRDD<Geometry> SpatialRangeQuery(SpatialRDD inputRDD, Polygon queryWindow)
     {
         return inputRDD.rawSpatialRDD.filter(new Function<Geometry, Boolean>() {
@@ -25,6 +43,15 @@ public class RangeQueryOperator {
             }
         });
     }
+    
+    /**
+     * Spatial range query.
+     *
+     * @param inputRDD the input RDD
+     * @param queryWindow the query window
+     * @param globalParameter the global parameter
+     * @return the java pair RDD
+     */
     public static JavaPairRDD<Pixel, Double> SpatialRangeQuery(JavaPairRDD<Pixel, Double> inputRDD, Polygon queryWindow, GlobalParameter globalParameter)
     {
         return inputRDD.filter(new Function<Tuple2<Pixel, Double>, Boolean>() {

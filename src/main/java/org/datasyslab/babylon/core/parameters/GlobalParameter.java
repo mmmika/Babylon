@@ -91,8 +91,10 @@ public class GlobalParameter implements Serializable{
     /** The use user supplied resolution. */
     public boolean useUserSuppliedResolution = false;
 
+    /** The max partition tree level. */
     public int maxPartitionTreeLevel = 9;
 
+    /** The overwrite existing images. */
     public boolean overwriteExistingImages = true;
 
     private GlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, PixelAggregatorOption pixelAggregatorOption,
@@ -377,6 +379,8 @@ public class GlobalParameter implements Serializable{
      * @param useInverseRatioForControlColorChannel the use inverse ratio for control color channel
      * @param colorAlpha the color alpha
      * @param datasetBoundary the dataset boundary
+     * @param maxPartitionTreeLevel the max partition tree level
+     * @param overwriteExistingImages the overwrite existing images
      * @return the global parameter
      */
     public static GlobalParameter getGlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, PixelAggregatorOption pixelAggregatorOption,

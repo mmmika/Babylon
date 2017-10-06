@@ -491,6 +491,16 @@ public class PixelizationUtils implements Serializable{
 	}
 
 
+	/**
+	 * Convert to pixel coordinate.
+	 *
+	 * @param resolutionX the resolution X
+	 * @param resolutionY the resolution Y
+	 * @param datasetBoundary the dataset boundary
+	 * @param spatialObject the spatial object
+	 * @param reverseSpatialCoordinate the reverse spatial coordinate
+	 * @return the geometry
+	 */
 	public static Geometry ConvertToPixelCoordinate(int resolutionX, int resolutionY, Envelope datasetBoundary, Geometry spatialObject, boolean reverseSpatialCoordinate)
 	{
 		if(spatialObject instanceof Point)
@@ -507,6 +517,16 @@ public class PixelizationUtils implements Serializable{
 		}
 	}
 
+	/**
+	 * Convert to pixel coordinate.
+	 *
+	 * @param resolutionX the resolution X
+	 * @param resolutionY the resolution Y
+	 * @param datasetBoundary the dataset boundary
+	 * @param spatialObject the spatial object
+	 * @param reverseSpatialCoordinate the reverse spatial coordinate
+	 * @return the polygon
+	 */
 	public static Polygon ConvertToPixelCoordinate(int resolutionX, int resolutionY, Envelope datasetBoundary, Polygon spatialObject, boolean reverseSpatialCoordinate)
 	{
 		GeometryFactory geometryfactory = new GeometryFactory();
@@ -522,6 +542,16 @@ public class PixelizationUtils implements Serializable{
 		return polygon;
 	}
 
+	/**
+	 * Convert to pixel coordinate.
+	 *
+	 * @param resolutionX the resolution X
+	 * @param resolutionY the resolution Y
+	 * @param datasetBoundary the dataset boundary
+	 * @param spatialObject the spatial object
+	 * @param reverseSpatialCoordinate the reverse spatial coordinate
+	 * @return the point
+	 */
 	public static Point ConvertToPixelCoordinate(int resolutionX, int resolutionY, Envelope datasetBoundary, Point spatialObject, boolean reverseSpatialCoordinate)
 	{
 		Tuple2<Integer,Integer> pixelCoordinate = FindOnePixelCoordinate(resolutionX,resolutionY,datasetBoundary,spatialObject.getCoordinate(),reverseSpatialCoordinate);
@@ -530,6 +560,16 @@ public class PixelizationUtils implements Serializable{
 		return geometryFactory.createPoint(newCoordinate);
 	}
 
+	/**
+	 * Convert to pixel coordinate.
+	 *
+	 * @param resolutionX the resolution X
+	 * @param resolutionY the resolution Y
+	 * @param datasetBoundary the dataset boundary
+	 * @param spatialObject the spatial object
+	 * @param reverseSpatialCoordinate the reverse spatial coordinate
+	 * @return the line string
+	 */
 	public static LineString ConvertToPixelCoordinate(int resolutionX, int resolutionY, Envelope datasetBoundary, LineString spatialObject, boolean reverseSpatialCoordinate)
 	{
 		GeometryFactory geometryfactory = new GeometryFactory();

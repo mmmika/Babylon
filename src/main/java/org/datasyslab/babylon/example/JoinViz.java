@@ -1,3 +1,9 @@
+/**
+ * FILE: JoinViz.java
+ * PATH: org.datasyslab.babylon.example.JoinViz.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon.example;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -18,16 +24,32 @@ import org.datasyslab.babylon.core.vizoperator.RenderOperator;
 import org.datasyslab.babylon.core.vizpartitioner.VizPartitioner;
 import org.datasyslab.geospark.spatialRDD.SpatialRDD;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JoinViz.
+ */
 public class JoinViz extends GenericVizEffect {
+    
+    /** The Constant logger. */
     final static Logger logger = Logger.getLogger(JoinViz.class);
 
+    /** The window RDD. */
     public SpatialRDD windowRDD;
 
+    /**
+     * Instantiates a new join viz.
+     *
+     * @param globalParameter the global parameter
+     * @param windowRDD the window RDD
+     */
     public JoinViz(GlobalParameter globalParameter, SpatialRDD windowRDD) {
         super(globalParameter);
         this.windowRDD = windowRDD;
     }
 
+    /* (non-Javadoc)
+     * @see org.datasyslab.babylon.core.GenericVizEffect#RunOperators(org.apache.spark.api.java.JavaSparkContext, org.datasyslab.geospark.spatialRDD.SpatialRDD)
+     */
     @Override
     public boolean RunOperators(JavaSparkContext sparkContext, SpatialRDD spatialRDD)
     {

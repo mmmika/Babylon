@@ -1,3 +1,9 @@
+/**
+ * FILE: TestGeovizQuery.java
+ * PATH: org.datasyslab.babylon.TestGeovizQuery.java
+ * Copyright (c) 2017 Arizona State University Data Systems Lab
+ * All rights reserved.
+ */
 package org.datasyslab.babylon;
 
 import com.vividsolutions.jts.geom.*;
@@ -23,10 +29,17 @@ import org.opengis.referencing.operation.TransformException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TestGeovizQuery.
+ */
 public class TestGeovizQuery {
 
 
 
+    /**
+     * Test multi range viz scatter plot.
+     */
     @org.junit.Test
     public void testMultiRangeVizScatterPlot() {
         setLogLevel();
@@ -63,6 +76,9 @@ public class TestGeovizQuery {
         sc.stop();
     }
 
+    /**
+     * Test multi range viz heat map.
+     */
     @org.junit.Test
     public void testMultiRangeVizHeatMap() {
         setLogLevel();
@@ -102,6 +118,9 @@ public class TestGeovizQuery {
         sc.stop();
         }
     
+    /**
+     * Test join viz scatter plot.
+     */
     @org.junit.Test
     public void testJoinVizScatterPlot() {
         setLogLevel();
@@ -130,6 +149,9 @@ public class TestGeovizQuery {
         sc.stop();
     }
 
+    /**
+     * Test join viz heat map.
+     */
     @org.junit.Test
     public void testJoinVizHeatMap() {
         setLogLevel();
@@ -162,6 +184,9 @@ public class TestGeovizQuery {
         }
     
     
+    /**
+     * Sets the log level.
+     */
     public static void setLogLevel()
     {
         Logger.getLogger("org.spark_project").setLevel(Level.WARN);
@@ -169,6 +194,13 @@ public class TestGeovizQuery {
         Logger.getLogger("akka").setLevel(Level.WARN);
         Logger.getLogger("com").setLevel(Level.WARN);
     }
+    
+    /**
+     * Gets the arizona.
+     *
+     * @param swapXY the swap XY
+     * @return the arizona
+     */
     public static Polygon getArizona(boolean swapXY)
     {
         Envelope ArizonaBoundary = new Envelope(37.153,31.567,-114.923,-109.172);
@@ -187,6 +219,12 @@ public class TestGeovizQuery {
         return polygon;
     }
 
+    /**
+     * Gets the manhattan.
+     *
+     * @param swapXY the swap XY
+     * @return the manhattan
+     */
     public static Polygon getManhattan(boolean swapXY)
     {
         Envelope ManhattanBoundary = new Envelope(40.7,40.911,-74.008,-73.879);
@@ -204,6 +242,13 @@ public class TestGeovizQuery {
         Polygon polygon = geometryFactory.createPolygon(coordinates);
         return polygon;
     }
+    
+    /**
+     * Gets the US main land boundary.
+     *
+     * @param swapXY the swap XY
+     * @return the US main land boundary
+     */
     public static Polygon getUSMainLandBoundary(boolean swapXY)
     {
         Envelope USMainLandBoundary = new Envelope(24.863836,50.000, -126.790180,-64.630926);

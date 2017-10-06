@@ -90,7 +90,6 @@ public class ImageGenerator implements Serializable{
 	 * @param imageType the image type
 	 * @param globalParameter the global parameter
 	 * @return true, if successful
-	 * @throws Exception the exception
 	 */
 	public boolean SaveRasterImageAsLocalFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter)
 	{
@@ -121,7 +120,6 @@ public class ImageGenerator implements Serializable{
 	 * @param imageType the image type
 	 * @param globalParameter the global parameter
 	 * @return true, if successful
-	 * @throws Exception the exception
 	 */
 	public boolean SaveRasterImageAsHadoopFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter)
 	{
@@ -185,7 +183,6 @@ public class ImageGenerator implements Serializable{
 	 * @param outputPath the output path
 	 * @param imageType the image type
 	 * @return true, if successful
-	 * @throws Exception the exception
 	 */
 	public boolean SaveRasterImageAsLocalFile(BufferedImage rasterImage, String outputPath, ImageType imageType)
 	{
@@ -208,7 +205,6 @@ public class ImageGenerator implements Serializable{
 	 * @param originalOutputPath the original output path
 	 * @param imageType the image type
 	 * @return true, if successful
-	 * @throws Exception the exception
 	 */
 	public boolean SaveRasterImageAsHadoopFile(BufferedImage rasterImage, String originalOutputPath, ImageType imageType)
 	{
@@ -285,7 +281,6 @@ public class ImageGenerator implements Serializable{
 	 * @param path the path
 	 * @param imageType the image type
 	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public boolean SaveRasterImageAsS3File(BufferedImage rasterImage, String regionName, String accessKey, String secretKey, String bucketName, String path, ImageType imageType) {
 		logger.info("[Babylon][SaveRasterImageAsS3File][Start]");
@@ -417,7 +412,6 @@ public class ImageGenerator implements Serializable{
 	 * @param originalOutputPath the original output path
 	 * @param imageType the image type
 	 * @return true, if successful
-	 * @throws Exception the exception
 	 */
 	public boolean deleteHadoopFile(String originalOutputPath, ImageType imageType) {
 		String outputPath = originalOutputPath+"."+imageType.getTypeName();
