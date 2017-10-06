@@ -1,5 +1,5 @@
 # Babylon 
-
+[![Build Status](https://travis-ci.org/DataSystemsLab/Babylon.svg?branch=master)](https://travis-ci.org/DataSystemsLab/Babylon)
 ### Massive-Scale GeoSpatial Visual Analytics System
 
 ## Introduction
