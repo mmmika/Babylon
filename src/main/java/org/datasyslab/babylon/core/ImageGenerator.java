@@ -26,7 +26,7 @@ import org.datasyslab.babylon.core.enumerator.ImageType;
 
 import org.datasyslab.babylon.core.internalobject.ImageSerializableWrapper;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
-import org.datasyslab.babylon.core.utils.RasterizationUtils;
+import org.datasyslab.babylon.core.utils.PixelizationUtils;
 import org.datasyslab.babylon.core.utils.S3Operator;
 import scala.Tuple2;
 
@@ -92,18 +92,20 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	public boolean SaveRasterImageAsLocalFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter) throws Exception
+	public boolean SaveRasterImageAsLocalFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter)
 	{
 		logger.info("[Babylon][SaveRasterImageAsLocalFile][Start]");
-		/*
-		for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
-			deleteLocalFile(outputPath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i),imageType);
+		if (globalParameter.overwriteExistingImages)
+		{
+			for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
+				deleteLocalFile(outputPath+"-"+PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i),imageType);
+			}
 		}
-		*/
+
 		distributedImage.foreach(new VoidFunction<Tuple2<Integer, ImageSerializableWrapper>>() {
 			@Override
 			public void call(Tuple2<Integer, ImageSerializableWrapper> integerImageSerializableWrapperTuple2) throws Exception {
-				SaveRasterImageAsLocalFile(integerImageSerializableWrapperTuple2._2.image, outputPath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
+				SaveRasterImageAsLocalFile(integerImageSerializableWrapperTuple2._2.image, outputPath+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
 			}
 		});
 		logger.info("[Babylon][SaveRasterImageAsLocalFile][Stop]");
@@ -121,18 +123,20 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	public boolean SaveRasterImageAsHadoopFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter) throws Exception
+	public boolean SaveRasterImageAsHadoopFile(JavaPairRDD<Integer,ImageSerializableWrapper> distributedImage, final String outputPath, final ImageType imageType, GlobalParameter globalParameter)
 	{
 		logger.info("[Babylon][SaveRasterImageAsHadoopFile][Start]");
-		/*
-		for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
-			deleteHadoopFile(outputPath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".", imageType);
+
+		if (globalParameter.overwriteExistingImages)
+		{
+			for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
+				deleteHadoopFile(outputPath+"-"+PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".", imageType);
+			}
 		}
-		*/
 		distributedImage.foreach(new VoidFunction<Tuple2<Integer, ImageSerializableWrapper>>() {
 			@Override
 			public void call(Tuple2<Integer, ImageSerializableWrapper> integerImageSerializableWrapperTuple2) throws Exception {
-				SaveRasterImageAsHadoopFile(integerImageSerializableWrapperTuple2._2.image, outputPath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
+				SaveRasterImageAsHadoopFile(integerImageSerializableWrapperTuple2._2.image, outputPath+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
 			}
 		});
 		logger.info("[Babylon][SaveRasterImageAsHadoopFile][Stop]");
@@ -158,15 +162,16 @@ public class ImageGenerator implements Serializable{
 	{
 		logger.info("[Babylon][SaveRasterImageAsS3File][Start]");
 		S3Operator s3Operator = new S3Operator(regionName, accessKey, secretKey);
-		/*
-		for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
-			s3Operator.deleteImage(bucketName, path+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+"."+imageType.getTypeName());
+		if (globalParameter.overwriteExistingImages)
+		{
+			for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++) {
+				s3Operator.deleteImage(bucketName, path+"-"+PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+"."+imageType.getTypeName());
+			}
 		}
-		*/
 		distributedImage.foreach(new VoidFunction<Tuple2<Integer, ImageSerializableWrapper>>() {
 			@Override
 			public void call(Tuple2<Integer, ImageSerializableWrapper> integerImageSerializableWrapperTuple2) throws Exception {
-				SaveRasterImageAsS3File(integerImageSerializableWrapperTuple2._2.image, regionName, accessKey, secretKey, bucketName, path+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
+				SaveRasterImageAsS3File(integerImageSerializableWrapperTuple2._2.image, regionName, accessKey, secretKey, bucketName, path+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,integerImageSerializableWrapperTuple2._1), imageType);
 			}
 		});
 		logger.info("[Babylon][SaveRasterImageAsS3File][Stop]");
@@ -182,7 +187,7 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	public boolean SaveRasterImageAsLocalFile(BufferedImage rasterImage, String outputPath, ImageType imageType) throws Exception
+	public boolean SaveRasterImageAsLocalFile(BufferedImage rasterImage, String outputPath, ImageType imageType)
 	{
 		logger.info("[Babylon][SaveRasterImageAsLocalFile][Start]");
 		File outputImage = new File(outputPath+"."+imageType.getTypeName());
@@ -205,7 +210,7 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	public boolean SaveRasterImageAsHadoopFile(BufferedImage rasterImage, String originalOutputPath, ImageType imageType) throws Exception
+	public boolean SaveRasterImageAsHadoopFile(BufferedImage rasterImage, String originalOutputPath, ImageType imageType)
 	{
 		logger.info("[Babylon][SaveRasterImageAsHadoopFile][Start]");
 		// Locate HDFS path
@@ -223,18 +228,46 @@ public class ImageGenerator implements Serializable{
 		// Delete existing files
 		Configuration hadoopConf = new org.apache.hadoop.conf.Configuration();
 		logger.info("[Babylon][SaveRasterImageAsSparkFile] HDFS URI BASE: "+hostName+":"+port);
-		FileSystem hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
+		FileSystem hdfs = null;
+		try {
+			hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		logger.info("[Babylon][SaveRasterImageAsSparkFile] Check the existence of path: "+localPath);
-		if (hdfs.exists(new org.apache.hadoop.fs.Path(localPath))) {
-			logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleting path: "+localPath);
-			hdfs.delete(new org.apache.hadoop.fs.Path(localPath), true);
-			logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleted path: "+localPath);
+		try {
+			if (hdfs.exists(new Path(localPath))) {
+                logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleting path: "+localPath);
+                hdfs.delete(new Path(localPath), true);
+                logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleted path: "+localPath);
+            }
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		Path path = new Path(outputPath);
-		FSDataOutputStream out = hdfs.create(path);
-		ImageIO.write(rasterImage,"png",out);
-		out.close();
-		hdfs.close();
+		FSDataOutputStream out = null;
+		try {
+			out = hdfs.create(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			ImageIO.write(rasterImage,"png",out);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			hdfs.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		logger.info("[Babylon][SaveRasterImageAsHadoopFile][Stop]");
 		return true;
 	}
@@ -254,7 +287,7 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public boolean SaveRasterImageAsS3File(BufferedImage rasterImage, String regionName, String accessKey, String secretKey, String bucketName, String path, ImageType imageType) throws IOException {
+	public boolean SaveRasterImageAsS3File(BufferedImage rasterImage, String regionName, String accessKey, String secretKey, String bucketName, String path, ImageType imageType) {
 		logger.info("[Babylon][SaveRasterImageAsS3File][Start]");
 		S3Operator s3Operator = new S3Operator(regionName,accessKey, secretKey);
 		s3Operator.putImage(bucketName,path+"."+imageType.getTypeName(),rasterImage);
@@ -386,7 +419,7 @@ public class ImageGenerator implements Serializable{
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */
-	public boolean deleteHadoopFile(String originalOutputPath, ImageType imageType) throws Exception {
+	public boolean deleteHadoopFile(String originalOutputPath, ImageType imageType) {
 		String outputPath = originalOutputPath+"."+imageType.getTypeName();
 		String[] splitString = outputPath.split(":");
 		String hostName = splitString[0]+":"+splitString[1];
@@ -401,13 +434,21 @@ public class ImageGenerator implements Serializable{
 		// Delete existing files
 		Configuration hadoopConf = new org.apache.hadoop.conf.Configuration();
 		logger.info("[Babylon][SaveRasterImageAsSparkFile] HDFS URI BASE: "+hostName+":"+port);
-		FileSystem hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
-		logger.info("[Babylon][SaveRasterImageAsSparkFile] Check the existence of path: "+localPath);
-		if (hdfs.exists(new org.apache.hadoop.fs.Path(localPath))) {
-			logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleting path: "+localPath);
-			hdfs.delete(new org.apache.hadoop.fs.Path(localPath), true);
-			logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleted path: "+localPath);
+		FileSystem hdfs = null;
+		try {
+			hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
+			logger.info("[Babylon][SaveRasterImageAsSparkFile] Check the existence of path: "+localPath);
+			if (hdfs.exists(new org.apache.hadoop.fs.Path(localPath))) {
+				logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleting path: "+localPath);
+				hdfs.delete(new org.apache.hadoop.fs.Path(localPath), true);
+				logger.info("[Babylon][SaveRasterImageAsSparkFile] Deleted path: "+localPath);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
+
 		return true;
 	}
 

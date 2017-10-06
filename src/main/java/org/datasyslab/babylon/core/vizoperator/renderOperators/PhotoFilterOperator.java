@@ -72,7 +72,7 @@ public class PhotoFilterOperator {
                         Double neighborPixelCount = 0.0;
                         if(currentPixelCount.getKey().getCurrentUniquePartitionId()<0)
                         {
-                            logger.error("[VisualizationOperator][ApplyPhotoFilter] this pixel doesn't have currentPartitionId that is assigned in VisualizationPartitioner.");
+                            logger.error("[VisualizationOperator][ApplyPhotoFilter] this pixel doesn't have currentPartitionId that is assigned in VizPartitioner.");
                         }
 
                         for (int x = -globalParameter.photoFilter.getFilterRadius(); x <= globalParameter.photoFilter.getFilterRadius(); x++) {

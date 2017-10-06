@@ -10,7 +10,7 @@ import org.datasyslab.babylon.core.internalobject.Pixel;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
 import org.datasyslab.babylon.core.parameters.PartitionParameter;
 import org.datasyslab.babylon.core.internalobject.PhotoFilter;
-import org.datasyslab.babylon.core.utils.RasterizationUtils;
+import org.datasyslab.babylon.core.utils.PixelizationUtils;
 import org.datasyslab.geospark.spatialPartitioning.quadtree.QuadRectangle;
 import scala.Tuple2;
 
@@ -101,7 +101,7 @@ public class VizPartitionerUtils {
         Long partitionCoordinateY = Math.round(zone.getEnvelope().getMinY()/ globalParameter.partitionIntervalY);
         int numPartition = -1;
         try {
-            numPartition = RasterizationUtils.Encode2DTo1DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis,partitionCoordinateX.intValue(),globalParameter.partitionsOnSingleAxis-1-partitionCoordinateY.intValue());
+            numPartition = PixelizationUtils.Encode2DTo1DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis,partitionCoordinateX.intValue(),globalParameter.partitionsOnSingleAxis-1-partitionCoordinateY.intValue());
         } catch (Exception e) {
             e.printStackTrace();
         }

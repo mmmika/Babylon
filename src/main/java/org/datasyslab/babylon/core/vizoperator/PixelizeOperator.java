@@ -6,17 +6,17 @@
  */
 package org.datasyslab.babylon.core.vizoperator;
 
-import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.datasyslab.babylon.core.enumerator.SpatialAggregatorOption;
 import org.datasyslab.babylon.core.internalobject.Pixel;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
-import org.datasyslab.babylon.core.utils.RasterizationUtils;
+import org.datasyslab.babylon.core.utils.PixelizationUtils;
 import org.datasyslab.geospark.spatialRDD.SpatialRDD;
 import scala.Tuple2;
 
@@ -37,24 +37,29 @@ public class PixelizeOperator {
      */
     public static JavaPairRDD<Pixel, Double> Pixelize(SpatialRDD spatialRDD, final GlobalParameter globalParameter)
     {
-        JavaPairRDD<Pixel, Double> spatialRDDwithPixelId = spatialRDD.rawSpatialRDD.flatMapToPair(new PairFlatMapFunction<Object,Pixel,Double>()
+        return Pixelize(spatialRDD.rawSpatialRDD,globalParameter);
+    }
+
+    public static JavaPairRDD<Pixel, Double> Pixelize(JavaRDD<Geometry> spatialRDD, final GlobalParameter globalParameter)
+    {
+        JavaPairRDD<Pixel, Double> spatialRDDwithPixelId = spatialRDD.flatMapToPair(new PairFlatMapFunction<Geometry,Pixel,Double>()
         {
             @Override
-            public Iterator<Tuple2<Pixel, Double>> call(Object spatialObject) throws Exception {
+            public Iterator<Tuple2<Pixel, Double>> call(Geometry spatialObject) throws Exception {
 
                 if (globalParameter.drawOutlineOnly)
                 {
                     if(spatialObject instanceof Point)
                     {
-                        return RasterizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Point)spatialObject, globalParameter.spatialAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
+                        return PixelizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Point)spatialObject, globalParameter.pixelAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
                     }
                     else if(spatialObject instanceof Polygon)
                     {
-                        return RasterizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Polygon)spatialObject,globalParameter.spatialAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
+                        return PixelizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Polygon)spatialObject,globalParameter.pixelAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
                     }
                     else if(spatialObject instanceof LineString)
                     {
-                        return RasterizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(LineString)spatialObject,globalParameter.spatialAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
+                        return PixelizationUtils.FindOutlinePixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(LineString)spatialObject,globalParameter.pixelAggregatorOption, globalParameter.reverseSpatialCoordinate).iterator();
                     }
                     else
                     {
@@ -65,7 +70,7 @@ public class PixelizeOperator {
                 {
                     if(spatialObject instanceof Polygon)
                     {
-                        return RasterizationUtils.FindFillingAreaPixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Polygon)spatialObject,(double)((Polygon) spatialObject).getUserData(), globalParameter.reverseSpatialCoordinate).iterator();
+                        return PixelizationUtils.FindFillingAreaPixelCoordinates(globalParameter.resolutionX, globalParameter.resolutionY,globalParameter.datasetBoundary,(Polygon)spatialObject,(double)((Polygon) spatialObject).getUserData(), globalParameter.reverseSpatialCoordinate).iterator();
                     }
                     else
                     {
@@ -90,4 +95,5 @@ public class PixelizeOperator {
         });
         return spatialRDDwithPixelId;
     }
+
 }

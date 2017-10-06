@@ -8,7 +8,7 @@ package org.datasyslab.babylon.core.parameters;
 
 import com.vividsolutions.jts.geom.Envelope;
 import org.apache.log4j.Logger;
-import org.datasyslab.babylon.core.enumerator.SpatialAggregatorOption;
+import org.datasyslab.babylon.core.enumerator.PixelAggregatorOption;
 import org.datasyslab.babylon.core.internalobject.ColoringRule;
 import org.datasyslab.babylon.core.internalobject.PhotoFilter;
 import org.datasyslab.babylon.extension.coloringRule.ColoringRuleFactory;
@@ -24,53 +24,53 @@ import java.io.Serializable;
  * The Class GlobalParameter.
  */
 public class GlobalParameter implements Serializable{
-    
+
     /** The Constant logger. */
     final static Logger logger = Logger.getLogger(GlobalParameter.class);
 
     /** The resolution X. */
     // Pixelize parameters: 5
     public int resolutionX = -1;
-    
+
     /** The resolution Y. */
     public int resolutionY = -1;
-    
+
     /** The reverse spatial coordinate. */
     public boolean reverseSpatialCoordinate = false;
-    
+
     /** The draw outline only. */
     public boolean drawOutlineOnly = false;
-    
+
     /** The min tree level. */
     public int minTreeLevel = 0;
 
     /** The spatial aggregator option. */
     // Spatial aggregator parameters: 1
-    public SpatialAggregatorOption spatialAggregatorOption = SpatialAggregatorOption.UNIFORM;
+    public PixelAggregatorOption pixelAggregatorOption = PixelAggregatorOption.UNIFORM;
 
     /** The filter radius. */
     // Photo filter parameters: 2
     public int filterRadius = 0;
-    
+
     /** The photo filter. */
     public PhotoFilter photoFilter;
 
     /** The sample amount. */
     // Coloring rule parameters: 6
-    public Long sampleAmount = new Long(1000000);
-    
+    public double samplingFraction = 0.01;
+
     /** The max pixel weight. */
     public int maxPixelWeight = -1;
-    
+
     /** The coloring rule. */
     public ColoringRule coloringRule;
-    
+
     /** The control color channel. */
     public Color controlColorChannel = Color.GREEN;
-    
+
     /** The use inverse ratio for control color channel. */
     public boolean useInverseRatioForControlColorChannel = false;
-    
+
     /** The color alpha. */
     public int colorAlpha = 255;
 
@@ -81,18 +81,23 @@ public class GlobalParameter implements Serializable{
     /** The partitions on single axis. */
     // Indirect parameters: 3
     public int partitionsOnSingleAxis = -1;
-    
+
     /** The partition interval X. */
     public double partitionIntervalX = -1.0;
-    
+
     /** The partition interval Y. */
     public double partitionIntervalY = -1.0;
 
     /** The use user supplied resolution. */
     public boolean useUserSuppliedResolution = false;
 
-    private GlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, SpatialAggregatorOption spatialAggregatorOption,
-                            int filterRadius, PhotoFilter photoFilter, Long sampleAmount, int maxPixelWeight, ColoringRule coloringRule, Color controlColorChannel, boolean useInverseRatioForControlColorChannel, int colorAlpha, Envelope datasetBoundary)
+    public int maxPartitionTreeLevel = 9;
+
+    public boolean overwriteExistingImages = true;
+
+    private GlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, PixelAggregatorOption pixelAggregatorOption,
+                            int filterRadius, PhotoFilter photoFilter, Double samplingFraction, int maxPixelWeight, ColoringRule coloringRule, Color controlColorChannel,
+                            boolean useInverseRatioForControlColorChannel, int colorAlpha, Envelope datasetBoundary, int maxPartitionTreeLevel,boolean overwriteExistingImages)
     {
         // Pixelize parameters: 5
         this.resolutionX = resolutionX;
@@ -102,14 +107,14 @@ public class GlobalParameter implements Serializable{
         this.minTreeLevel = minTreeLevel;
 
         // Spatial aggregator parameters: 1
-        this.spatialAggregatorOption = spatialAggregatorOption;
+        this.pixelAggregatorOption = pixelAggregatorOption;
 
         // Photo filter parameters: 2
         this.filterRadius = filterRadius;
         this.photoFilter = photoFilter;
 
         // Coloring rule parameters: 6
-        this.sampleAmount = sampleAmount;
+        this.samplingFraction = samplingFraction;
         this.maxPixelWeight = maxPixelWeight;
         this.coloringRule = coloringRule;
         this.controlColorChannel = controlColorChannel;
@@ -118,6 +123,10 @@ public class GlobalParameter implements Serializable{
 
         // Dataset boundary: 1
         this.datasetBoundary = datasetBoundary;
+
+        this.maxPartitionTreeLevel = maxPartitionTreeLevel;
+
+        this.overwriteExistingImages = overwriteExistingImages;
 
         // Indirect parameters: 3
         this.partitionsOnSingleAxis = (int) Math.sqrt(Math.pow(4,minTreeLevel));
@@ -156,7 +165,7 @@ public class GlobalParameter implements Serializable{
         }
         return true;
     }
-    
+
     /**
      * Sets the dataset boundary.
      *
@@ -196,12 +205,12 @@ public class GlobalParameter implements Serializable{
     /**
      * Sets the spatial aggregator option.
      *
-     * @param spatialAggregatorOption the spatial aggregator option
+     * @param pixelAggregatorOption the spatial aggregator option
      * @return true, if successful
      */
-    public boolean setSpatialAggregatorOption(SpatialAggregatorOption spatialAggregatorOption)
+    public boolean setSpatialAggregatorOption(PixelAggregatorOption pixelAggregatorOption)
     {
-        this.spatialAggregatorOption = spatialAggregatorOption;
+        this.pixelAggregatorOption = pixelAggregatorOption;
         return true;
     }
 
@@ -217,7 +226,7 @@ public class GlobalParameter implements Serializable{
         this.set(keyValue[0], keyValue[1]);
         return true;
     }
-    
+
     /**
      * Sets the.
      *
@@ -256,7 +265,7 @@ public class GlobalParameter implements Serializable{
         // Spatial aggregator parameters: 1
         else if (key.equalsIgnoreCase("aggregation")||key.equalsIgnoreCase("aggr"))
         {
-            this.spatialAggregatorOption = SpatialAggregatorOption.getSpatialAggregatorOption(value);
+            this.pixelAggregatorOption = PixelAggregatorOption.getSpatialAggregatorOption(value);
         }
 
         // Photo filter parameters: 2
@@ -270,9 +279,9 @@ public class GlobalParameter implements Serializable{
         }
 
         // Coloring rule parameters: 6
-        else if (key.equalsIgnoreCase("totalCount"))
+        else if (key.equalsIgnoreCase("samplingfraction")||key.equalsIgnoreCase("fraction"))
         {
-            this.sampleAmount = Long.parseLong(value);
+            this.samplingFraction = Double.parseDouble(value);
         }
         else if (key.equalsIgnoreCase("maxPixelWeight"))
         {
@@ -304,6 +313,14 @@ public class GlobalParameter implements Serializable{
             double minY = Double.parseDouble(coordinates[2]);
             double maxY = Double.parseDouble(coordinates[3]);
             this.datasetBoundary = new Envelope(minX, maxX, minY, maxY);
+        }
+        else if(key.equalsIgnoreCase("maxPartitionTreeLevel")||key.equalsIgnoreCase("maxtreelevel"))
+        {
+            this.maxPartitionTreeLevel = Integer.parseInt(value);
+        }
+        else if(key.equalsIgnoreCase("overwriteexistingimages")||key.equalsIgnoreCase("overwrite"))
+        {
+            this.overwriteExistingImages = Boolean.parseBoolean(value);
         }
         else
         {
@@ -337,8 +354,8 @@ public class GlobalParameter implements Serializable{
      */
     public static GlobalParameter getGlobalParameter()
     {
-        GlobalParameter globalParameter = new GlobalParameter(0, 0, false, true, 0, SpatialAggregatorOption.UNIFORM,
-                0, new GaussianBlur(3), new Long(1000000), -1, new LinearFunction(), Color.GREEN, false, 255, new Envelope(-20026376.39, 20026376.39,  -20048966.10, 20048966.10));
+        GlobalParameter globalParameter = new GlobalParameter(0, 0, false, true, 0, PixelAggregatorOption.UNIFORM,
+                0, new GaussianBlur(3), 0.01, -1, new LinearFunction(), Color.GREEN, false, 255, new Envelope(-20026376.39, 20026376.39,  -20048966.10, 20048966.10),9,true);
         return globalParameter;
     }
 
@@ -350,10 +367,10 @@ public class GlobalParameter implements Serializable{
      * @param reverseSpatialCoordinate the reverse spatial coordinate
      * @param drawOutlineOnly the draw outline only
      * @param minTreeLevel the min tree level
-     * @param spatialAggregatorOption the spatial aggregator option
+     * @param pixelAggregatorOption the spatial aggregator option
      * @param filterRadius the filter radius
      * @param photoFilter the photo filter
-     * @param totalCount the total count
+     * @param samplingFraction the sampling fraction
      * @param maxPixelWeight the max pixel weight
      * @param coloringRule the coloring rule
      * @param controlColorChannel the control color channel
@@ -362,11 +379,12 @@ public class GlobalParameter implements Serializable{
      * @param datasetBoundary the dataset boundary
      * @return the global parameter
      */
-    public static GlobalParameter getGlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, SpatialAggregatorOption spatialAggregatorOption,
-                                                     int filterRadius, PhotoFilter photoFilter, Long totalCount, int maxPixelWeight, ColoringRule coloringRule, Color controlColorChannel, boolean useInverseRatioForControlColorChannel, int colorAlpha, Envelope datasetBoundary)
+    public static GlobalParameter getGlobalParameter(int resolutionX, int resolutionY, boolean reverseSpatialCoordinate, boolean drawOutlineOnly, int minTreeLevel, PixelAggregatorOption pixelAggregatorOption,
+                                                     int filterRadius, PhotoFilter photoFilter, Double samplingFraction, int maxPixelWeight, ColoringRule coloringRule, Color controlColorChannel,
+                                                     boolean useInverseRatioForControlColorChannel, int colorAlpha, Envelope datasetBoundary, int maxPartitionTreeLevel, boolean overwriteExistingImages)
     {
-        return new GlobalParameter(resolutionX,resolutionY,reverseSpatialCoordinate,drawOutlineOnly,minTreeLevel,spatialAggregatorOption,filterRadius, photoFilter,
-                totalCount, maxPixelWeight, coloringRule,controlColorChannel,useInverseRatioForControlColorChannel,colorAlpha,datasetBoundary);
+        return new GlobalParameter(resolutionX,resolutionY,reverseSpatialCoordinate,drawOutlineOnly,minTreeLevel, pixelAggregatorOption,filterRadius, photoFilter,
+                samplingFraction, maxPixelWeight, coloringRule,controlColorChannel,useInverseRatioForControlColorChannel,colorAlpha,datasetBoundary, maxPartitionTreeLevel,overwriteExistingImages);
     }
 
     /* (non-Javadoc)
@@ -385,14 +403,14 @@ public class GlobalParameter implements Serializable{
         parameterString += "minTreeLevel: " + this.minTreeLevel +"\n";
 
         // Spatial aggregator parameters: 1
-        parameterString += "spatialAggregatorOption: " + this.spatialAggregatorOption.getTypeName() +"\n";
+        parameterString += "pixelAggregatorOption: " + this.pixelAggregatorOption.getTypeName() +"\n";
 
         // Photo filter parameters: 2
         parameterString += "filterRadius: " + this.filterRadius +"\n";
         parameterString += "photoFilter: " + this.photoFilter.getClass().getName() +"\n";
 
         // Coloring rule parameters: 6
-        parameterString += "sampleAmout: " + this.sampleAmount +"\n";
+        parameterString += "samplingFraction: " + this.samplingFraction +"\n";
         parameterString += "maxPixelWeight: " + this.maxPixelWeight +"\n";
         parameterString += "coloringRule: " + this.coloringRule.getClass().getName() +"\n";
         parameterString += "controlColorChannel: " + this.controlColorChannel +"\n";
@@ -401,6 +419,8 @@ public class GlobalParameter implements Serializable{
 
         // Dataset boundary: 1
         parameterString += "datasetBoundary: " + this.datasetBoundary.toString() +"\n";
+        parameterString += "maxPartitionTreeLevel: "+this.maxPartitionTreeLevel+"\n";
+        parameterString += "overwriteExistingImages: "+this.overwriteExistingImages+"\n";
 
         // Indirect parameters: 3
         parameterString += "partitionIntervalX: " + this.partitionIntervalX +"\n";

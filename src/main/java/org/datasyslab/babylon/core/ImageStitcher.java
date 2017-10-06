@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.datasyslab.babylon.core.internalobject.BigBufferedImage;
 import org.datasyslab.babylon.core.enumerator.ImageType;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
-import org.datasyslab.babylon.core.utils.RasterizationUtils;
+import org.datasyslab.babylon.core.utils.PixelizationUtils;
 import org.datasyslab.babylon.core.utils.S3Operator;
 import scala.Tuple2;
 
@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,7 +42,7 @@ public class ImageStitcher {
      * @return true, if successful
      * @throws Exception the exception
      */
-    public static boolean stitchImagePartitionsFromLocalFile(String imageTilePath, GlobalParameter globalParameter) throws Exception
+    public static boolean stitchImagePartitionsFromLocalFile(String imageTilePath, GlobalParameter globalParameter)
     {
         logger.info("[Babylon][stitchImagePartitions][Start]");
 
@@ -51,11 +52,11 @@ public class ImageStitcher {
         {
             BufferedImage imageTile = null;
             try {
-                imageTile = ImageIO.read(new File(""+imageTilePath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png"));
+                imageTile = ImageIO.read(new File(""+imageTilePath+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png"));
             } catch (IOException e) {
                 continue;
             }
-            Tuple2<Integer,Integer> partitionCoordinate = RasterizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
+            Tuple2<Integer,Integer> partitionCoordinate = PixelizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
             int partitionMinX = partitionCoordinate._1*Math.round(globalParameter.resolutionX/globalParameter.partitionsOnSingleAxis);
             int partitionMinY = partitionCoordinate._2*Math.round(globalParameter.resolutionY/globalParameter.partitionsOnSingleAxis);
             //if(partitionMinX!=0){partitionMinX--;}
@@ -85,7 +86,7 @@ public class ImageStitcher {
      * @return true, if successful
      * @throws Exception the exception
      */
-    public static boolean stitchImagePartitionsFromS3File(String regionName, String accessKey, String secretKey, String bucketName, String imageTilePath, GlobalParameter globalParameter) throws Exception
+    public static boolean stitchImagePartitionsFromS3File(String regionName, String accessKey, String secretKey, String bucketName, String imageTilePath, GlobalParameter globalParameter)
     {
         logger.info("[Babylon][stitchImagePartitions][Start]");
 
@@ -96,11 +97,11 @@ public class ImageStitcher {
         {
             BufferedImage imageTile = null;
             try {
-                imageTile = s3Operator.getImage(bucketName, imageTilePath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png");
+                imageTile = s3Operator.getImage(bucketName, imageTilePath+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png");
             } catch (AmazonS3Exception e) {
                 continue;
             }
-            Tuple2<Integer,Integer> partitionCoordinate = RasterizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
+            Tuple2<Integer,Integer> partitionCoordinate = PixelizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
             int partitionMinX = partitionCoordinate._1*Math.round(globalParameter.resolutionX/globalParameter.partitionsOnSingleAxis);
             int partitionMinY = partitionCoordinate._2*Math.round(globalParameter.resolutionY/globalParameter.partitionsOnSingleAxis);
             //if(partitionMinX!=0){partitionMinX--;}
@@ -126,7 +127,7 @@ public class ImageStitcher {
      * @return true, if successful
      * @throws Exception the exception
      */
-    public static boolean stitchImagePartitionsFromHadoopFile(String imageTilePath, GlobalParameter globalParameter) throws Exception
+    public static boolean stitchImagePartitionsFromHadoopFile(String imageTilePath, GlobalParameter globalParameter)
     {
         logger.info("[Babylon][stitchImagePartitions][Start]");
 
@@ -143,14 +144,21 @@ public class ImageStitcher {
         }
 
         Configuration hadoopConf = new org.apache.hadoop.conf.Configuration();
-        FileSystem hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
+        FileSystem hdfs = null;
+        try {
+            hdfs = FileSystem.get(new URI(hostName+":"+port), hadoopConf);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         //Stitch all image partitions together
         for(int i=0;i<globalParameter.partitionsOnSingleAxis*globalParameter.partitionsOnSingleAxis;i++)
         {
             BufferedImage imageTile = null;
             try {
-                if (hdfs.exists(new org.apache.hadoop.fs.Path(localPath+"-"+RasterizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png")))
+                if (hdfs.exists(new org.apache.hadoop.fs.Path(localPath+"-"+ PixelizationUtils.getImageTileName(globalParameter.minTreeLevel,globalParameter.partitionsOnSingleAxis,i)+".png")))
                 {
                     InputStream inputStream = hdfs.open(new org.apache.hadoop.fs.Path(localPath+"-"+i+".png"));
                     imageTile = ImageIO.read(inputStream);
@@ -164,7 +172,7 @@ public class ImageStitcher {
             } catch (IOException e) {
                 continue;
             }
-            Tuple2<Integer,Integer> partitionCoordinate = RasterizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
+            Tuple2<Integer,Integer> partitionCoordinate = PixelizationUtils.Decode1DTo2DId(globalParameter.partitionsOnSingleAxis, globalParameter.partitionsOnSingleAxis, i);
             int partitionMinX = partitionCoordinate._1*Math.round(globalParameter.resolutionX/globalParameter.partitionsOnSingleAxis);
             int partitionMinY = partitionCoordinate._2*Math.round(globalParameter.resolutionY/globalParameter.partitionsOnSingleAxis);
             //if(partitionMinX!=0){partitionMinX--;}

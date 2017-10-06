@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import org.datasyslab.babylon.core.GenericVizEffect;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
-import org.datasyslab.babylon.core.enumerator.SpatialAggregatorOption;
+import org.datasyslab.babylon.core.enumerator.PixelAggregatorOption;
 import org.datasyslab.babylon.extension.coloringRule.PiecewiseFunction;
 
 // TODO: Auto-generated Javadoc
@@ -38,7 +38,7 @@ public class HeatMap extends GenericVizEffect{
 	@Override
 	public boolean SetParameter()
 	{
-		this.globalParameter.spatialAggregatorOption = SpatialAggregatorOption.COUNT;
+		this.globalParameter.pixelAggregatorOption = PixelAggregatorOption.COUNT;
 		this.globalParameter.coloringRule = new PiecewiseFunction();
 		return true;
 	}

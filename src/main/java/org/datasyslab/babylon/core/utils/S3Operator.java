@@ -83,19 +83,31 @@ public class S3Operator {
 	 * @return true, if successful
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public boolean putImage(String bucketName, String path, BufferedImage rasterImage) throws IOException {
+	public boolean putImage(String bucketName, String path, BufferedImage rasterImage) {
         deleteImage(bucketName,path);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(rasterImage, "png", outputStream);
-        byte[] buffer = outputStream.toByteArray();
+		try {
+			ImageIO.write(rasterImage, "png", outputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		byte[] buffer = outputStream.toByteArray();
         InputStream inputStream = new ByteArrayInputStream(buffer);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(buffer.length);
 		s3client.putObject(new PutObjectRequest(bucketName, path, inputStream, metadata));
-		inputStream.close();
-		outputStream.close();
-        logger.debug("[Babylon][putImage] Put an image");
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			outputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.debug("[Babylon][putImage] Put an image");
         return true;
 	}
 	
@@ -107,14 +119,27 @@ public class S3Operator {
 	 * @return the image
 	 * @throws Exception the exception
 	 */
-	public BufferedImage getImage(String bucketName, String path) throws Exception {
+	public BufferedImage getImage(String bucketName, String path) {
 		logger.debug("[Babylon][getImage] Start");
 		S3Object s3Object =  s3client.getObject(bucketName, path);
         InputStream inputStream = s3Object.getObjectContent();
-		BufferedImage rasterImage = ImageIO.read(inputStream);
-		inputStream.close();
-		s3Object.close();
-        logger.debug("[Babylon][getImage] Got an image");
+		BufferedImage rasterImage = null;
+		try {
+			rasterImage = ImageIO.read(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			s3Object.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.debug("[Babylon][getImage] Got an image");
 		return rasterImage;
 	}
 }

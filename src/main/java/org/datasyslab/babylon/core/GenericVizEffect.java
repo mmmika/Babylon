@@ -14,11 +14,11 @@ import org.datasyslab.babylon.core.internalobject.Pixel;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
 import org.datasyslab.babylon.core.parameters.PartitionParameter;
 import org.datasyslab.babylon.core.vizoperator.PixelizeOperator;
-import org.datasyslab.babylon.core.vizoperator.SpatialAggregateOperator;
-import org.datasyslab.babylon.core.vizoperator.VizPartitionOperator;
+import org.datasyslab.babylon.core.vizoperator.PixelAggregateOperator;
 import org.datasyslab.babylon.core.vizoperator.renderOperators.ColorizeOperator;
 import org.datasyslab.babylon.core.vizoperator.renderOperators.PhotoFilterOperator;
 import org.datasyslab.babylon.core.vizoperator.renderOperators.PlotOperator;
+import org.datasyslab.babylon.core.vizpartitioner.VizPartitioner;
 import org.datasyslab.geospark.spatialRDD.SpatialRDD;
 
 // TODO: Auto-generated Javadoc
@@ -76,9 +76,9 @@ public class GenericVizEffect {
     public boolean RunOperators(JavaSparkContext sparkContext, SpatialRDD spatialRDD)
     {
         JavaPairRDD<Pixel, Double> distributedRasterCountMaxtrix = PixelizeOperator.Pixelize(spatialRDD, globalParameter);
-        PartitionParameter partitionParameter = VizPartitionOperator.initPartitionInfo(sparkContext, distributedRasterCountMaxtrix, globalParameter);
-        distributedRasterCountMaxtrix = VizPartitionOperator.vizPartition(distributedRasterCountMaxtrix, globalParameter, partitionParameter);
-        distributedRasterCountMaxtrix = SpatialAggregateOperator.Aggregate(distributedRasterCountMaxtrix,globalParameter);
+        PartitionParameter partitionParameter = VizPartitioner.initPartitionInfo(sparkContext, distributedRasterCountMaxtrix, globalParameter);
+        distributedRasterCountMaxtrix = VizPartitioner.vizPartition(distributedRasterCountMaxtrix, globalParameter, partitionParameter);
+        distributedRasterCountMaxtrix = PixelAggregateOperator.Aggregate(distributedRasterCountMaxtrix,globalParameter);
         distributedRasterCountMaxtrix = PhotoFilterOperator.PhotoFilter(distributedRasterCountMaxtrix, globalParameter, partitionParameter);
         distributedRasterCountMaxtrix = ColorizeOperator.Colorize(distributedRasterCountMaxtrix,globalParameter);
         distributedRasterImage = PlotOperator.Plot(distributedRasterCountMaxtrix,globalParameter);

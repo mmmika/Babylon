@@ -7,7 +7,7 @@
 package org.datasyslab.babylon.core.internalobject;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import org.datasyslab.babylon.core.utils.RasterizationUtils;
+import org.datasyslab.babylon.core.utils.PixelizationUtils;
 import scala.Tuple2;
 
 import java.io.Serializable;
@@ -174,7 +174,7 @@ public class Pixel extends Coordinate implements Serializable{
         */
         int id = -1;
         try {
-            id = RasterizationUtils.Encode2DTo1DId(resolutionX,resolutionY,x,y);
+            id = PixelizationUtils.Encode2DTo1DId(resolutionX,resolutionY,x,y);
         } catch (Exception e) {
             e.printStackTrace();
         }

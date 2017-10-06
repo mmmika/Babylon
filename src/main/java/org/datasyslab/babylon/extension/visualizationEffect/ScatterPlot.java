@@ -8,10 +8,9 @@ package org.datasyslab.babylon.extension.visualizationEffect;
 
 import org.apache.log4j.Logger;
 import org.datasyslab.babylon.core.GenericVizEffect;
+import org.datasyslab.babylon.core.enumerator.PixelAggregatorOption;
 import org.datasyslab.babylon.core.parameters.GlobalParameter;
-import org.datasyslab.babylon.core.enumerator.SpatialAggregatorOption;
 
-import com.vividsolutions.jts.geom.Envelope;
 import org.datasyslab.babylon.extension.coloringRule.LinearFunction;
 
 // TODO: Auto-generated Javadoc
@@ -38,7 +37,7 @@ public class ScatterPlot extends GenericVizEffect{
 	@Override
 	public boolean SetParameter()
 	{
-		this.globalParameter.spatialAggregatorOption = SpatialAggregatorOption.UNIFORM;
+		this.globalParameter.pixelAggregatorOption = PixelAggregatorOption.UNIFORM;
 		this.globalParameter.coloringRule = new LinearFunction();
 		return true;
 	}
